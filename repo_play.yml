@@ -1,0 +1,20 @@
+--- 
+- name: add repos to provisioned environment 
+  hosts: all 
+  gather_facts: false 
+  become: true 
+  vars: 
+    repo_files: 
+      - src: base_repos  
+        dest: base_repos.repo 
+      - src: database_repos 
+        dest: database_repos.repo 
+  tasks: 
+    - name: Copy file with owner and permissions 
+      ansible.builtin.copy: 
+        src: "{{ item.src }}" 
+        dest: "/etc/yum.repos.d/{{ item.dest }}"  
+        owner: root 
+        group: root 
+        mode: '0644' 
+      loop: "{{ repo_files }}"
